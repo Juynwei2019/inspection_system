@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>登入｜巡檢系統</title>
+  <style>
+    :root{font-family:Inter,"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;color:#193042;background:#edf3f4;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 16% 14%,#d7efea 0,transparent 28%),linear-gradient(135deg,#eef4f4,#f8fafb);display:grid;place-items:center;padding:24px}
+    .shell{width:min(960px,100%);min-height:570px;display:grid;grid-template-columns:1.05fr .95fr;background:white;border:1px solid #dce7e9;border-radius:24px;overflow:hidden;box-shadow:0 28px 80px #15394624}
+    .visual{background:linear-gradient(145deg,#112d3a,#145657 68%,#0b8b79);color:white;padding:54px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+    .visual:after{content:"";position:absolute;width:330px;height:330px;border:70px solid #69d6bf19;border-radius:50%;right:-150px;bottom:-125px}.brand{display:flex;gap:13px;align-items:center;position:relative;z-index:1}.mark{height:44px;width:44px;border-radius:13px;background:#43d3b8;color:#123d40;display:grid;place-items:center;font-size:25px;font-weight:900}.brand strong{display:block;font-size:18px}.brand small{display:block;color:#a9cecc;font-size:11px;letter-spacing:.09em;margin-top:3px}
+    .intro{position:relative;z-index:1}.intro span{font-size:12px;font-weight:800;letter-spacing:.15em;color:#82dfcd}.intro h1{font-size:36px;line-height:1.25;letter-spacing:-.04em;margin:14px 0 15px}.intro p{max-width:390px;color:#cee3e2;font-size:14px;line-height:1.8;margin:0}.foot{position:relative;z-index:1;color:#9fc4c3;font-size:12px}
+    .login{padding:54px clamp(30px,6vw,66px);display:flex;flex-direction:column;justify-content:center}.login h2{font-size:28px;letter-spacing:-.035em;margin:0 0 9px}.login>p{font-size:13px;color:#718995;line-height:1.6;margin:0 0 30px}.field{display:grid;gap:8px;margin-bottom:18px}.field label{font-size:12px;font-weight:800;color:#4f6b76}.input{position:relative}.input input{width:100%;border:1px solid #d4e1e5;border-radius:11px;padding:13px 44px 13px 14px;outline:0;color:#203b46;font:inherit;background:#fbfdfd}.input input:focus{border-color:#0a9285;box-shadow:0 0 0 4px #0a92851a;background:white}.input button{position:absolute;right:8px;top:6px;height:34px;border:0;background:transparent;color:#64808b;border-radius:8px;cursor:pointer}.submit{width:100%;border:0;border-radius:11px;padding:13px 16px;background:#087e78;color:white;font-weight:800;font:inherit;cursor:pointer;box-shadow:0 8px 18px #087e7828;margin-top:5px}.submit:hover{background:#086d68}.submit:disabled{opacity:.58;cursor:wait}.error{display:none;background:#fff0ed;color:#a74739;border:1px solid #f3d1ca;border-radius:10px;padding:11px 13px;margin-bottom:17px;font-size:12px;line-height:1.5}.error.show{display:block}.secure{display:flex;align-items:center;gap:8px;color:#8298a1;font-size:11px;margin-top:22px}.secure:before{content:"✓";display:grid;place-items:center;height:19px;width:19px;border-radius:50%;background:#e2f4ef;color:#10806f;font-weight:900}
+    @media(max-width:760px){.shell{grid-template-columns:1fr;min-height:auto}.visual{padding:28px 30px}.intro{margin-top:48px}.intro h1{font-size:27px}.foot{display:none}.login{padding:38px 30px 44px}}@media(max-width:430px){body{padding:0;background:white}.shell{border:0;border-radius:0;min-height:100vh}.visual{padding:23px 22px}.intro{margin-top:30px}.intro p{display:none}.login{padding:34px 22px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="visual">
+      <div class="brand"><div class="mark">✓</div><div><strong>巡檢管理</strong><small>INSPECTION SYSTEM</small></div></div>
+      <div class="intro"><span>SAFE · TRACEABLE · CLEAR</span><h1>每一次巡檢，<br>都留下可靠紀錄。</h1><p>集中維護地點與檢查項目、保存巡檢草稿，並快速追蹤已提交的現場結果。</p></div>
+      <div class="foot">FastAPI × SQLite　｜　受保護的內部系統</div>
+    </section>
+    <section class="login">
+      <h2>歡迎回來</h2>
+      <p>請使用巡檢系統帳號登入，繼續今天的工作。</p>
+      <div id="error" class="error" role="alert"></div>
+      <form id="login-form">
+        <div class="field"><label for="username">帳號</label><div class="input"><input id="username" name="username" autocomplete="username" maxlength="80" required autofocus placeholder="請輸入帳號"></div></div>
+        <div class="field"><label for="password">密碼</label><div class="input"><input id="password" name="password" type="password" autocomplete="current-password" maxlength="200" required placeholder="請輸入密碼"><button id="toggle-password" type="button" aria-label="顯示密碼">顯示</button></div></div>
+        <button id="submit" class="submit" type="submit">登入系統</button>
+      </form>
+      <div class="secure">登入狀態儲存在安全的 HttpOnly Cookie</div>
+    </section>
+  </main>
+  <script>
+    const form=document.querySelector('#login-form'),error=document.querySelector('#error'),submit=document.querySelector('#submit'),password=document.querySelector('#password');
+    document.querySelector('#toggle-password').addEventListener('click',event=>{const show=password.type==='password';password.type=show?'text':'password';event.currentTarget.textContent=show?'隱藏':'顯示';event.currentTarget.setAttribute('aria-label',show?'隱藏密碼':'顯示密碼')});
+    form.addEventListener('submit',async event=>{event.preventDefault();error.classList.remove('show');submit.disabled=true;submit.textContent='正在登入…';try{const response=await fetch('/api/v1/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:form.username.value.trim(),password:form.password.value})});let body={};try{body=await response.json()}catch{}if(!response.ok)throw new Error(body.detail?.message||'登入失敗，請稍後再試');location.replace('/')}catch(reason){error.textContent=reason.message;error.classList.add('show');password.select()}finally{submit.disabled=false;submit.textContent='登入系統'}});
+  </script>
+</body>
+</html>
