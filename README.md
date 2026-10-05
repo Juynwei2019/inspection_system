@@ -2,6 +2,10 @@
 
 以 FastAPI 與 SQLite 建置的巡檢系統，同一個服務提供網頁及 API，包含帳號權限、地點與項目維護、巡檢排程、照片附件、結果查詢及異常改善追蹤。
 
+## 操作手冊
+
+請參閱 [圖文操作手冊](docs/操作手冊.md)，包含登入改密碼、維護設定、排程、照片上傳及異常結案的實際畫面。亦提供 [可列印 HTML](docs/操作手冊.html) 與 [PDF](docs/操作手冊.pdf)。
+
 ## 原始碼與目錄
 
 請直接修改 `inspection_system_fastapi/` 中的原始碼，使用 Git 追蹤變更。根目錄的 `inspection_system_fastapi_schedule_mvp.zip` 保留作為最初匯入來源；日常開發不必解壓或重新封裝它。
